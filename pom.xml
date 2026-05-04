@@ -66,6 +66,14 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Source: https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.22.0</version>
+      <scope>compile</scope>
+    </dependency>
+
     <!--High performance Java reflection using code generation-->
     <dependency>
       <groupId>com.esotericsoftware</groupId>
