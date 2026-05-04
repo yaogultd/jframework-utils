@@ -164,7 +164,13 @@
       <artifactId>pinyin4j</artifactId>
       <version>2.5.1</version>
     </dependency>
-    <!--pinyin4j end-->
+
+    <!--日志-->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.5.32</version>
+    </dependency>
 
     <dependency>
       <groupId>com.github.gotson</groupId>
