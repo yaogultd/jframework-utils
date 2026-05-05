@@ -107,27 +107,22 @@ public final class JUtilValidator {
             }
 
             //长度检验
-            if (minChars != -1
+            if (minChars > 0
                     && JUtilString.equals(typeName, "java.lang.String")
                     && ((String)val).length() < minChars) {
                 return new Result(false, errCode, errMessage);
             }
-            if (maxChars != -1
+            if (maxChars > 0
                     && JUtilString.equals(typeName, "java.lang.String")
                     && ((String)val).length() > maxChars) {
                 return new Result(false, errCode, errMessage);
             }
-            if (minChars != -1
-                    && JUtilString.equals(typeName, "java.lang.String")
-                    && ((String)val).length() < minChars) {
-                return new Result(false, errCode, errMessage);
-            }
-            if (minBytes != -1
+            if (minBytes > 0
                     && JUtilString.equals(typeName, "java.lang.String")
                     && JUtilString.bytes((String)val, stringEncoding) < minBytes) {
                 return new Result(false, errCode, errMessage);
             }
-            if (maxBytes != -1
+            if (maxBytes > 0
                     && JUtilString.equals(typeName, "java.lang.String")
                     && JUtilString.bytes((String)val, stringEncoding) > maxBytes) {
                 return new Result(false, errCode, errMessage);

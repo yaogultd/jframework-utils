@@ -3,7 +3,7 @@ package j.util.validating.anno;
 import java.lang.annotation.*;
 
 @Inherited
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Validator {
     /**

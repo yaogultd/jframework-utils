@@ -2,12 +2,14 @@ package j.util;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
 
 
@@ -25,16 +27,122 @@ public class JUtilTimestamp{
 	public static final long millisOfHour=3600000L;
 	public static final long millisOfDay=86400000L;
 	public static final long millisOfWeek=86400000*7L;
-	
+
 	/**
-	 * 
+	 * 时间输出格式化（区分大小写）
+	 * yyyy	四位年份
+	 * MM	两位数月份
+	 * dd	两位数日
+	 * HH	24小时制小时
+	 * mm	分钟
+	 * ss	秒
+	 */
+
+	/**
+	 *
 	 * @param time
 	 * @return 如 20080808
 	 */
 	public static int getDateAsYYYYMMDD(Timestamp time){
-		return Integer.parseInt(JUtilString.replaceAll(time.toString().substring(0,10),"-",""));
+		return getDateAsYYYYMMDD(time, null);
 	}
-	
+
+	/**
+	 *
+	 * @param time
+	 * @param zoneId
+	 * @return 如 20080808
+	 */
+	public static int getDateAsYYYYMMDD(Timestamp time, ZoneId zoneId){
+		Instant instant = Instant.ofEpochMilli(time.getTime());
+
+		// 转换为系统默认时区的 LocalDateTime
+		LocalDateTime dateTime = LocalDateTime.ofInstant(instant, zoneId==null?ZoneId.systemDefault():zoneId);
+
+		//yyyy-MM-dd HH:mm:ss
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		String formatted = dateTime.format(formatter);
+
+		return Integer.parseInt(JUtilString.replaceAll(formatted.substring(0, 10), "-", ""));
+	}
+
+	/**
+	 *
+	 * @param time
+	 * @return 如 2008-08-08
+	 */
+	public static String getDateYYYYMMDD(Timestamp time){
+		return getDateYYYYMMDD(time, null);
+	}
+
+	/**
+	 *
+	 * @param time
+	 * @param zoneId
+	 * @return 如 2008-08-08
+	 */
+	public static String getDateYYYYMMDD(Timestamp time, ZoneId zoneId){
+		Instant instant = Instant.ofEpochMilli(time.getTime());
+
+		// 转换为系统默认时区的 LocalDateTime
+		LocalDateTime dateTime = LocalDateTime.ofInstant(instant, zoneId==null?ZoneId.systemDefault():zoneId);
+
+		//yyyy-MM-dd HH:mm:ss
+		DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		String formatted = dateTime.format(formatter1);
+
+		return formatted.substring(0, 10);
+	}
+
+	/**
+	 *
+	 * @param time
+	 * @return 如 2008-08-08
+	 */
+	public static String getDateMMDDYYYY(Timestamp time){
+		return getDateMMDDYYYY(time, null);
+	}
+
+	/**
+	 *
+	 * @param time
+	 * @return 如 2008-08-08
+	 * @return
+	 */
+	public static String getDateMMDDYYYY(Timestamp time, ZoneId zoneId){
+		Instant instant = Instant.ofEpochMilli(time.getTime());
+
+		// 转换为系统默认时区的 LocalDateTime
+		LocalDateTime dateTime = LocalDateTime.ofInstant(instant, zoneId==null?ZoneId.systemDefault():zoneId);
+
+		//MM-dd-yyyy HH:mm:ss
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
+		String formatted = dateTime.format(formatter);
+
+		return formatted.substring(0, 10);
+	}
+
+	/**
+	 *
+	 * @param time
+	 * @param zoneId
+	 * @param format
+	 * @return
+	 */
+	public static String getDateFormatted(Timestamp time, ZoneId zoneId, String format){
+		// 或使用 Instant.now()
+		Instant instant = Instant.ofEpochMilli(time.getTime());
+
+		// 转换为系统默认时区的 LocalDateTime
+		LocalDateTime dateTime = LocalDateTime.ofInstant(instant, zoneId==null?ZoneId.systemDefault():zoneId);
+
+		//MM-dd-yyyy HH:mm:ss
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+		String formatted = dateTime.format(formatter);
+
+		return formatted.substring(0, 10);
+	}
+
 	/**
 	 * 得到符合中国习惯的周一~周日顺序号（1~7）
 	 * @param time
@@ -560,8 +668,6 @@ public class JUtilTimestamp{
 
 
 	public static void main(String[] args){
-		String localTime="2023-08-31 19:39:47.796";
-
-		System.out.println(TimeZone.getTimeZone("UTC"));
+		System.out.println(getDateMMDDYYYY(new Timestamp(System.currentTimeMillis())));
 	}
 }
