@@ -10,9 +10,4 @@ public class SelfValidatedObjectImpl implements SelfValidatedObject{
     public Result isValid(){
         return new Result(true, "1", "");
     }
-
-    @Override
-    public void fromJson(JSONObject json) throws Exception{
-        JUtilBean.json2Bean(this, json);
-    }
 }

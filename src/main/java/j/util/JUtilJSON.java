@@ -24,13 +24,24 @@ public class JUtilJSON{
 	 */
 	public static Object isJson(String s){
 		if(JUtilString.isBlank(s)) return null;
+		s = s.trim();
 
+		JSONObject object;
 		try{
-			JSONObject o = new JSONObject(s, (new JSONParserConfiguration()).withStrictMode(false));
-			if(o==null) return null;
+			object = new JSONObject(s, (new JSONParserConfiguration()).withStrictMode(false));
 		}catch (Exception e){
-			return null;
+			object = null;
 		}
+
+
+		JSONArray array;
+		try{
+			array = new JSONArray(s, (new JSONParserConfiguration()).withStrictMode(false));
+		}catch (Exception e){
+			array = null;
+		}
+
+		if(object==null || array==null) return null;
 
 		if("{}".equals(s)){
 			return new JSONObject(s);
@@ -75,8 +86,6 @@ public class JUtilJSON{
 	public static JSONArray array(String s){
 		try{
 			if(JUtilString.isBlank(s)) s="[]";
-			JSONObject o = new JSONObject(s, (new JSONParserConfiguration()).withStrictMode(false));
-			if(o==null) new JSONArray("[]");
 			return new JSONArray(s);
 		}catch(Exception e){
 			//throw new JSONException("Invalid JSON string");
