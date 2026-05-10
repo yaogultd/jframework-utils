@@ -28,7 +28,7 @@ public class JUtilJSON{
 
 		JSONObject object;
 		try{
-			object = new JSONObject(s, (new JSONParserConfiguration()).withStrictMode(false));
+			object = new JSONObject(s, (new JSONParserConfiguration()).withStrictMode(true));
 		}catch (Exception e){
 			object = null;
 		}
@@ -36,12 +36,12 @@ public class JUtilJSON{
 
 		JSONArray array;
 		try{
-			array = new JSONArray(s, (new JSONParserConfiguration()).withStrictMode(false));
+			array = new JSONArray(s, (new JSONParserConfiguration()).withStrictMode(true));
 		}catch (Exception e){
 			array = null;
 		}
 
-		if(object==null || array==null) return null;
+		if(object==null && array==null) return null;
 
 		if("{}".equals(s)){
 			return new JSONObject(s);
@@ -463,12 +463,6 @@ public class JUtilJSON{
 	}
 
 	public static void main(String[] args) throws Exception {
-		String s = JUtilFile.read(new File("D:\\work\\temp\\records.data"), "UTF-8");
-		JSONArray records = JUtilJSON.array(JUtilJSON.parse(s), "records");
-		List<String> uids = new ArrayList<>();
-		for(int i=0; i<records.length(); i++){
-			uids.add(JUtilJSON.string(JUtilJSON.get(records, i), "uid"));
-		}
-		System.out.println(JArray.toString(uids, ",", "'"));
+		System.out.println(isJson("[大模型]"));
 	}
 }
