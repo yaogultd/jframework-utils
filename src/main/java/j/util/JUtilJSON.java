@@ -1,15 +1,12 @@
 package j.util;
 
-import j.core.type.JArray;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONParserConfiguration;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  *
@@ -23,6 +20,17 @@ public class JUtilJSON{
 	 * @return
 	 */
 	public static Object isJson(String s){
+		return isJson(s, false);
+	}
+
+	/**
+	 *
+	 * @param s
+	 * @param toFix
+	 * @return
+	 */
+	public static Object isJson(String s, boolean toFix){
+		if(toFix) s = fixJsonUnescapedNewlines(s);
 		if(JUtilString.isBlank(s)) return null;
 		s = s.trim();
 
@@ -64,14 +72,25 @@ public class JUtilJSON{
 	}
 
 	/**
-	 * 将字符串反序列化成json对象
+	 *
 	 * @param s
 	 * @return
 	 */
 	public static JSONObject parse(String s){
+		return parse(s, false);
+	}
+
+	/**
+	 *
+	 * @param s
+	 * @param toFix
+	 * @return
+	 */
+	public static JSONObject parse(String s, boolean toFix){
 		try{
+			if(toFix) s = fixJsonUnescapedNewlines(s);
 			if(JUtilString.isBlank(s)) s="{}";
-			return new JSONObject(s);
+			return new JSONObject(s, (new JSONParserConfiguration()).withStrictMode(false));
 		}catch(Exception e){
 			//throw new JSONException("Invalid JSON string");
 			return new JSONObject("{}");
@@ -79,12 +98,23 @@ public class JUtilJSON{
 	}
 
 	/**
-	 * 将字符串反序列化成json对象
+	 *
 	 * @param s
 	 * @return
 	 */
 	public static JSONArray array(String s){
+		return array(s, false);
+	}
+
+	/**
+	 *
+	 * @param s
+	 * @param toFix
+	 * @return
+	 */
+	public static JSONArray array(String s, boolean toFix){
 		try{
+			if(toFix) s = fixJsonUnescapedNewlines(s);
 			if(JUtilString.isBlank(s)) s="[]";
 			return new JSONArray(s);
 		}catch(Exception e){
@@ -462,7 +492,76 @@ public class JUtilJSON{
 		return json2Beans(cls, array(jsonArrayString));
 	}
 
+	/**
+	 *
+	 * @param json
+	 * @return
+	 */
+	public static String fixJsonUnescapedNewlines(String json) {
+		if (json == null || json.isEmpty()) return json;
+
+		StringBuilder out = new StringBuilder(json.length() + 16);
+		boolean inString = false;
+		boolean escaping = false;
+
+		for (int i = 0; i < json.length(); i++) {
+			char c = json.charAt(i);
+
+			if (!inString) {
+				if (c == '"') inString = true;
+				out.append(c);
+				continue;
+			}
+
+			// inString == true
+			if (escaping) {
+				out.append(c);
+				escaping = false;
+				continue;
+			}
+
+			if (c == '\\') {
+				out.append(c);
+				escaping = true;
+				continue;
+			}
+
+			if (c == '"') {
+				out.append(c);
+				inString = false;
+				continue;
+			}
+
+			if (c == '\n') {
+				out.append("\\n");
+				continue;
+			}
+			if (c == '\r') {
+				out.append("\\r");
+				continue;
+			}
+
+			out.append(c);
+		}
+
+		return out.toString();
+	}
+
 	public static void main(String[] args) throws Exception {
-		System.out.println(isJson("[大模型]"));
+		String s="{\n" +
+				"\t\"translation\": \"## 个人机器人市场规模与份额\n" +
+				"示例文本\n" +
+				"示例文本\n" +
+				"示例文本\n" +
+				"示例文本\n" +
+				"\n" +
+				"示例文本\"\n" +
+				"}";
+
+		s = fixJsonUnescapedNewlines(s);
+		System.out.println(s);
+
+		JSONObject jsonObject = parse(s);
+		System.out.println(isJson(jsonObject.toString(2)));
 	}
 }

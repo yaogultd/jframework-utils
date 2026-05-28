@@ -4,13 +4,17 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 
 public class JUtilTimestamp{
@@ -265,8 +269,7 @@ public class JUtilTimestamp{
     public static int getValue(long time,int type){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date(time));
-        int result = calendar.get(type);
-        return result;
+        return calendar.get(type);
     }
     
     /**
@@ -666,8 +669,36 @@ public class JUtilTimestamp{
 		return TimeZone.getTimeZone(getTimeZone(request));
 	}
 
+	/**
+	 * 
+	 * @param from
+	 * @param timeUnit
+	 * @param howMany
+	 * @return
+	 */
+	public static long ago(long from, ChronoUnit timeUnit, long howMany){
+		if(from <= 0) from = System.currentTimeMillis();
+
+		if(timeUnit == null) timeUnit = ChronoUnit.MILLIS;
+
+		try{
+			if(timeUnit == ChronoUnit.WEEKS || timeUnit == ChronoUnit.MONTHS || timeUnit == ChronoUnit.YEARS){
+				return ZonedDateTime.ofInstant(Instant.ofEpochMilli(from), ZoneId.systemDefault())
+					.minus(howMany, timeUnit)
+					.toInstant()
+					.toEpochMilli();
+			}
+			return Instant.ofEpochMilli(from).minus(howMany, timeUnit).toEpochMilli();
+		}catch (DateTimeException | ArithmeticException e){
+			if(howMany > 0) return Long.MIN_VALUE;
+			if(howMany < 0) return Long.MAX_VALUE;
+			return from;
+		}
+	}
+
 
 	public static void main(String[] args){
-		System.out.println(getDateMMDDYYYY(new Timestamp(System.currentTimeMillis())));
+		long yearAgo = ago(0, ChronoUnit.YEARS, 1);
+		System.out.println(new Timestamp(yearAgo));
 	}
 }

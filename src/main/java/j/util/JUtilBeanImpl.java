@@ -935,8 +935,8 @@ public class JUtilBeanImpl {
 				}else {
 					if(o.getClass().isPrimitive()){
 						s.append(o);
-					}else if(JUtilJSON.isJson(o.toString()) != null) {//本身是json串
-						s.append(o);
+					//}else if(JUtilJSON.isJson(o.toString()) != null) {//本身是json串
+					//	s.append(o);
 					}else {
 						s.append(this.bean2Json(o, encode, extraKeyValues, excludes, converter, converterParams, ignoreNulls));
 					}
@@ -1080,11 +1080,11 @@ public class JUtilBeanImpl {
 			}else if((o instanceof JSONObject)){
 				s.append(o);
 			}else {
-				if(JUtilJSON.isJson(o.toString()) != null) {//本身是json串
-					s.append(o);
-				}else {
+				//if(JUtilJSON.isJson(o.toString()) != null) {//本身是json串
+				//	s.append(o);
+				//}else {
 					s.append(this.bean2Json(o, false, null, excludes, converter, converterParams));
-				}
+				//}
 			}
 		}
 
