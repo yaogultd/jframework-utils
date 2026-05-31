@@ -1667,32 +1667,36 @@ public class JUtilString extends JUtilSorter {
 		return sequence;
 	}
 
-	private static void concat(){
-		long start = System.currentTimeMillis();
-		String s = "";
-		for(int i=0; i<100000; i++) s += "x";
-		System.out.println("concat end "+(System.currentTimeMillis() - start) + "ms");
+	/**
+	 * Checks if the given string ends with a punctuation character.
+	 *
+	 * @param str the string to check
+	 * @return true if the last character of the string is a punctuation, false otherwise
+	 */
+	public static boolean endsWithPunctuation(String str) {
+		if (str == null || str.isEmpty()) return false;
+		char last = str.charAt(str.length() - 1);
+
+		// 标点符号的 Unicode 类别
+		int type = Character.getType(last);
+		return type == Character.DASH_PUNCTUATION
+				|| type == Character.START_PUNCTUATION
+				|| type == Character.END_PUNCTUATION
+				|| type == Character.CONNECTOR_PUNCTUATION
+				|| type == Character.OTHER_PUNCTUATION;
 	}
 
-	private static void concatViaStringBuffer(){
-		long start = System.currentTimeMillis();
-		StringBuffer s = new StringBuffer();
-		for(int i=0; i<1000000; i++) s.append("x");
-		System.out.println("concatViaStringBuffer end "+(System.currentTimeMillis() - start) + "ms");
-	}
+	/**
+	 * Checks if the given string ends with a newline character.
+	 *
+	 * @param str the string to check
+	 * @return true if the string ends with a newline character ('\n' or '\r'), false otherwise
+	 */
+	public static boolean endsWithNewline(String str) {
+		if (str == null || str.isEmpty()) return false;
+		char last = str.charAt(str.length() - 1);
 
-	private static void concatViaStringBuilder(){
-		long start = System.currentTimeMillis();
-		StringBuilder s = new StringBuilder();
-		for(int i=0; i<1000000; i++) s.append("x");
-		System.out.println("concatViaStringBuilder end "+(System.currentTimeMillis() - start) + "ms");
-	}
-
-	public static void main(String[] args){
-		String resp="%22 aria-expanded%3d%22false%22 role";
-		if(resp != null && resp.indexOf("%22") > -1){
-			resp = JUtilString.decodeURI(resp, "UTF-8");
-		}
-		System.out.println(resp);
+		// 换行符直接判断
+		return (last == '\n' || last == '\r');
 	}
 }

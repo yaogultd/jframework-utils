@@ -698,7 +698,7 @@ public class JUtilTimestamp{
 
 
 	public static void main(String[] args){
-		long yearAgo = ago(0, ChronoUnit.YEARS, 1);
+		long yearAgo = ago(0, ChronoUnit.YEARS, -1);
 		System.out.println(new Timestamp(yearAgo));
 	}
 }
